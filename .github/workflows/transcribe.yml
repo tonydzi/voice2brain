@@ -41,8 +41,21 @@ jobs:
 
       - name: Commit the new notes
         run: |
+          # Out of the box `brain/` is gitignored, so repo-as-brain mode is OFF and
+          # there is nothing to commit. Say that and finish green -- `git add` on an
+          # ignored path exits 1, which used to paint the whole run red for anyone
+          # who ran this workflow before doing the one-time setup above.
+          if git check-ignore -q brain 2>/dev/null; then
+            echo "brain/ is still gitignored: repo-as-brain mode is off, nothing to commit."
+            echo "To turn it on, remove 'brain/' from .gitignore (keep brain/.index/ and brain/archive/)."
+            exit 0
+          fi
           git config user.name "voice2brain-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A brain
-          git diff --cached --quiet || git commit -m "transcribe: notes from inbox audio"
+          if git diff --cached --quiet; then
+            echo "no new notes this run"
+            exit 0
+          fi
+          git commit -m "transcribe: notes from inbox audio"
           git push
