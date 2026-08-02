@@ -66,6 +66,14 @@ python watch.py                   # polls brain/inbox/, transcribes + ingests, a
 
 Drop audio into `brain/inbox/` from anywhere — a synced folder, a Telegram bot, macOS Voice Memos (see [docs/ADAPTERS.md](docs/ADAPTERS.md)).
 
+### Repo-as-brain (zero infrastructure)
+
+Fork this repo, remove `brain/` from `.gitignore`, and commit audio files into
+`brain/inbox/` — the bundled [GitHub Action](.github/workflows/transcribe.yml)
+transcribes them on push and commits the markdown notes back. No server, no
+laptop left running: your git repo IS the brain, and its history is the changelog
+of your thinking. Setup notes are at the top of the workflow file.
+
 ## What ingestion does
 
 Each transcript becomes a markdown note with:
