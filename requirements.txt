@@ -1,0 +1,3 @@
+# Everything is optional. The pipeline degrades gracefully without any of these.
+faster-whisper   # local STT (recommended: private, free, GPU-accelerated)
+openai           # cloud STT fallback + summaries + embeddings
