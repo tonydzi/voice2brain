@@ -94,8 +94,13 @@ def wiki_links(text: str) -> list[str]:
     words = set(re.findall(r"[\w]{3,}", text.lower(), re.UNICODE))
     out = []
     for stem, title_words in existing_titles().items():
+        if len(title_words) < 2:
+            continue                      # a one-word title matches half the world
+        # A short title can never reach MIN_LINK_TOKENS, so it would be unlinkable
+        # forever ("fix the watchdog" -> 2 words). Ask it for all of its words instead.
+        need = min(MIN_LINK_TOKENS, len(title_words))
         hits = title_words & words
-        if len(hits) >= MIN_LINK_TOKENS and len(hits) / len(title_words) >= MIN_LINK_COVERAGE:
+        if len(hits) >= need and len(hits) / len(title_words) >= MIN_LINK_COVERAGE:
             out.append(stem)
     return sorted(out)
 

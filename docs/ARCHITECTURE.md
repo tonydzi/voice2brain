@@ -31,7 +31,17 @@ Everything else (SQLite index, embeddings) is derived and can be deleted and reb
   matching found nothing on real notes. A link is written when ≥3 of another note's
   distinctive title words appear here and they cover ≥60% of that title
   (`MIN_LINK_TOKENS` / `MIN_LINK_COVERAGE` in `ingest.py` — the two numbers to tune
-  if you get too many or too few links).
+  if you get too many or too few links). A title shorter than 3 distinctive words is
+  asked for all of them instead, so short notes stay linkable; one-word titles are
+  skipped entirely.
+- Known limits of word overlap, so you can judge whether they matter to you:
+  - **Generic titles over-link.** A note called `machine-learning-model-evaluation`
+    will link from any text that happens to mention machine learning and model
+    evaluation. Raise `MIN_LINK_COVERAGE` if your notes share a lot of vocabulary.
+  - **No stemming.** "customers' risks" does not match a `customer-risk` title, and
+    inflected languages (Russian, German, Finnish) lose links this way. Stemming per
+    language is more machinery than this repo is willing to carry; if you need it,
+    swap `wiki_links()` — it is 12 lines and has no other callers.
 - LLM parts are opt-in via `OPENAI_API_KEY`: one-paragraph summary, vector embedding.
 - Collision-safe: same-day same-slug notes get `-2`, `-3` suffixes, never overwritten.
 
