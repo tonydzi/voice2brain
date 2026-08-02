@@ -49,26 +49,55 @@ def slugify(text: str, max_words: int = 6) -> str:
     return "-".join(words)[:60]
 
 
-def auto_tags(text: str, n: int = 5) -> list[str]:
+def auto_tags(text: str, n: int = 5, floor: int = 3) -> list[str]:
+    """Frequency tags, with a top-up so short notes are not left bare.
+
+    Measured on real voice notes: a spoken paragraph is 100-300 words and almost
+    nothing repeats, so a strict "must appear twice" rule tagged most notes with
+    one word and many with none. Repeated words still rank first; single-mention
+    words only fill the remaining slots up to `floor`.
+    """
     words = re.findall(r"[\w]{4,}", text.lower(), re.UNICODE)
     counts = Counter(w for w in words if w not in STOP)
-    return [w for w, c in counts.most_common(n) if c >= 2]
+    ranked = counts.most_common(n)
+    tags = [w for w, c in ranked if c >= 2]
+    if len(tags) < floor:
+        tags += [w for w, c in ranked if c < 2][: floor - len(tags)]
+    return tags[:n]
 
 
-def existing_titles() -> dict[str, str]:
-    """lowercase title -> note filename stem, for wiki-linking."""
+MIN_LINK_TOKENS = 3      # fewer shared words than this is a coincidence, not a reference
+MIN_LINK_COVERAGE = 0.6  # ...and they must cover most of the other note's title
+
+
+def existing_titles() -> dict[str, frozenset]:
+    """note filename stem -> the distinctive words in its title, for wiki-linking."""
     titles = {}
     for p in NOTES.glob("*.md"):
-        # strip the date prefix for matching: 2026-08-02-pricing-idea -> "pricing idea"
+        # strip the date prefix: 2026-08-02-audit-pricing-again -> {audit, pricing, again}
         stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", p.stem)
-        titles[stem.replace("-", " ")] = p.stem
+        words = frozenset(w for w in stem.split("-") if len(w) >= 3 and w not in STOP)
+        if words:
+            titles[p.stem] = words
     return titles
 
 
 def wiki_links(text: str) -> list[str]:
-    lower = text.lower()
-    return [stem for title, stem in existing_titles().items()
-            if len(title) >= 8 and title in lower]
+    """Link when the text really refers to another note.
+
+    Substring matching on the slug does not work and this was measured, not guessed:
+    a slug is stopword-stripped ("audit-pricing-again") while prose is not
+    ("the audit pricing again"), so the literal slug almost never occurs in a
+    sentence and every note came out with zero links. Word-overlap survives the
+    difference: enough of the other note's distinctive words, present in this text.
+    """
+    words = set(re.findall(r"[\w]{3,}", text.lower(), re.UNICODE))
+    out = []
+    for stem, title_words in existing_titles().items():
+        hits = title_words & words
+        if len(hits) >= MIN_LINK_TOKENS and len(hits) / len(title_words) >= MIN_LINK_COVERAGE:
+            out.append(stem)
+    return sorted(out)
 
 
 def summarize(text: str) -> str:

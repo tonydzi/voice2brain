@@ -25,7 +25,13 @@ Everything else (SQLite index, embeddings) is derived and can be deleted and reb
 ### ingest.py
 - Input: transcript text (file or stdin). Output: one markdown note + index rows.
 - Deterministic parts run always and cost 0 tokens: slug, frontmatter, auto-tags
-  (frequency-based), wiki-links (existing note titles found in the text), FTS index.
+  (frequency-based, topped up so short notes are never bare), wiki-links, FTS index.
+- Wiki-links match on WORD OVERLAP, not on the literal slug. A slug is stopword-stripped
+  ("audit-pricing-again") and prose is not ("the audit pricing again"), so substring
+  matching found nothing on real notes. A link is written when ≥3 of another note's
+  distinctive title words appear here and they cover ≥60% of that title
+  (`MIN_LINK_TOKENS` / `MIN_LINK_COVERAGE` in `ingest.py` — the two numbers to tune
+  if you get too many or too few links).
 - LLM parts are opt-in via `OPENAI_API_KEY`: one-paragraph summary, vector embedding.
 - Collision-safe: same-day same-slug notes get `-2`, `-3` suffixes, never overwritten.
 

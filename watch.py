@@ -55,6 +55,17 @@ def run_once() -> int:
 
 
 def main(argv: list[str]) -> None:
+    # Help must never fall through into the forever-loop: a first-time user typing
+    # `python watch.py --help` would otherwise get a hung terminal that silently
+    # starts creating brain/ folders. Unknown flags stop loudly for the same reason.
+    if "--help" in argv or "-h" in argv:
+        print(__doc__)
+        return
+    unknown = [a for a in argv if a != "--once"]
+    if unknown:
+        print(f"[watch] unknown argument(s): {' '.join(unknown)}", file=sys.stderr)
+        print(__doc__, file=sys.stderr)
+        raise SystemExit(2)
     if "--once" in argv:
         n = run_once()
         print(f"[watch] processed {n} file(s)")

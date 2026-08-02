@@ -23,6 +23,29 @@ DeFi has money legos. Personal knowledge needs the same: small, composable block
 
 We run this pipeline daily on our own voice notes (hundreds of them). This repo is the distilled, dependency-light version of that production setup.
 
+## Prior art, and where this sits
+
+Voice → markdown is a crowded shelf. We looked before building, and we are not claiming
+to transcribe better than anyone — we use the same engine most of them do. What we
+found, and the honest gap:
+
+| What exists | Examples | What it gives you | Where it stops |
+|---|---|---|---|
+| **Obsidian plugins** | [whisper-obsidian-plugin](https://github.com/nikdanilov/whisper-obsidian-plugin), [obsidian-transcription](https://github.com/djmango/obsidian-transcription), [voice-md](https://github.com/denizokcu/voice-md), [obsidian-voice-notes](https://github.com/iahmedani/obsidian-voice-notes) | Record and transcribe inside the editor, insert at cursor or into daily notes | It is a plugin. It runs when Obsidian runs, in the language Obsidian speaks. You cannot put it in a cron job, a server, or someone else's pipeline |
+| **Standalone transcribers** | [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win), dictation tools | Audio in, text out, very well | They stop at text. Tagging, linking, indexing and search are still your problem |
+| **Single-source scripts** | Apple Voice Memos → daily journal gists | Turnkey for exactly one source and one output shape | Change the source or the output and you are rewriting it |
+
+**voice2brain is the middle block nobody ships:** source-agnostic in (any audio file,
+any way it lands in a folder), and it keeps going *past* the transcript — note,
+frontmatter, auto-tags, wiki-links, full-text and vector index, search. Four Python
+files, no editor, no server, no Docker, no framework.
+
+**When you should not use this.** If you live inside Obsidian and just want to dictate
+into the note you have open, install a plugin — it is less work and it is right there.
+If all you need is `audio → text`, use faster-whisper directly; we are a wrapper around
+it, not a replacement for it. This repo earns its place only when you want the text to
+*become* something and stay yours afterwards.
+
 ## Quick start
 
 ```bash
@@ -48,8 +71,8 @@ Drop audio into `brain/inbox/` from anywhere — a synced folder, a Telegram bot
 Each transcript becomes a markdown note with:
 
 - **frontmatter** — date, source file, duration, tags;
-- **auto-tags** — frequency-based keywords (0 tokens, no LLM needed);
-- **wiki-links** — `[[Other Note]]` links to existing notes whose titles appear in the text, so the graph grows by itself;
+- **auto-tags** — frequency-based keywords (0 tokens, no LLM needed); repeated words rank first, and short notes are topped up so nothing lands untagged;
+- **wiki-links** — `[[Other Note]]` when enough of another note's distinctive title words show up in this one (≥3 words and ≥60% of that title), so the graph grows by itself without matching literal strings;
 - **summary** — one-paragraph TL;DR (optional, needs an LLM key);
 - **embeddings** — vector index in a single SQLite file for semantic search (optional; falls back to SQLite FTS5 full-text search, which needs nothing).
 
