@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use voice2brain in research or software, please cite it as below."
+title: "voice2brain: voice notes into a linked markdown knowledge base"
+type: software
+authors:
+  - family-names: Dziatkovskii
+    given-names: Anton
+    orcid: "https://orcid.org/0000-0001-7408-3054"
+    affiliation: "Palo Alto AI Research Lab"
+repository-code: "https://github.com/Palo-Alto-AI-Research-Lab/voice2brain"
+url: "https://github.com/Palo-Alto-AI-Research-Lab/voice2brain"
+license: MIT
+keywords:
+  - speech to text
+  - personal knowledge management
+  - second brain
+  - Whisper
+  - markdown
+abstract: >-
+  A primitive rather than a platform: four small Python scripts that take any audio
+  file and produce linked, tagged, searchable markdown. Transcription wraps Whisper
+  with defaults tuned on messy phone-mic recordings; ingestion adds frontmatter,
+  frequency-based tags with no LLM call, wiki-links derived from title-word overlap,
+  an optional summary and an optional vector index. Plain files are the database and
+  SQLite is only a derived index; every optional dependency degrades along a ladder
+  rather than failing.

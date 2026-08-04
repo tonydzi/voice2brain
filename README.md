@@ -11,15 +11,15 @@ audio file ──▶ transcribe.py ──▶ ingest.py ──▶ notes/*.md ─�
                                    embeddings)
 ```
 
-No server. No database you can't open in a text editor. No framework. Four small Python scripts you can read in one sitting and fix with a hammer.
+No server. No database you can't open in a text editor. No framework. Four small Python scripts — `transcribe.py`, `ingest.py`, `search.py`, `watch.py` — that you can read in one sitting and fix with a hammer.
 
 ## Why a primitive?
 
 DeFi has money legos. Personal knowledge needs the same: small, composable blocks. This is one block — **voice in, brain out** — deliberately kept so simple that:
 
-- every note is a plain `.md` file you own forever (Obsidian/Logseq/anything opens it),
-- every step runs standalone (`transcribe` without `ingest`, `ingest` without embeddings),
-- every dependency is optional and degrades gracefully.
+- every note is a plain `.md` file you own forever (Obsidian/Logseq/anything opens it);
+- every step runs standalone — `transcribe.py` without `ingest.py`, `ingest.py` without embeddings;
+- every dependency is optional and degrades gracefully, via the ladders in `transcribe.py` and `search.py`.
 
 We run this pipeline daily on our own voice notes (hundreds of them). This repo is the distilled, dependency-light version of that production setup.
 
@@ -35,16 +35,12 @@ found, and the honest gap:
 | **Standalone transcribers** | [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win), dictation tools | Audio in, text out, very well | They stop at text. Tagging, linking, indexing and search are still your problem |
 | **Single-source scripts** | Apple Voice Memos → daily journal gists | Turnkey for exactly one source and one output shape | Change the source or the output and you are rewriting it |
 
-**voice2brain is the middle block nobody ships:** source-agnostic in (any audio file,
-any way it lands in a folder), and it keeps going *past* the transcript — note,
-frontmatter, auto-tags, wiki-links, full-text and vector index, search. Four Python
-files, no editor, no server, no Docker, no framework.
+**voice2brain is the middle block nobody ships:** source-agnostic in (any audio file, any way it lands in a folder), and it keeps going *past* the transcript — note, frontmatter, auto-tags, wiki-links, full-text and vector index, search, all in `ingest.py` and `search.py`.
+Four Python files, no editor, no server, no Docker, no framework.
 
-**When you should not use this.** If you live inside Obsidian and just want to dictate
-into the note you have open, install a plugin — it is less work and it is right there.
-If all you need is `audio → text`, use faster-whisper directly; we are a wrapper around
-it, not a replacement for it. This repo earns its place only when you want the text to
-*become* something and stay yours afterwards.
+**When you should not use this.** If you live inside Obsidian and just want to dictate into the note you have open, install a plugin — it is less work and it is right there.
+If all you need is `audio → text`, use [faster-whisper](https://github.com/SYSTRAN/faster-whisper) directly; `transcribe.py` is a wrapper around it, not a replacement for it.
+This repo earns its place only when you want the text to *become* something and stay yours afterwards.
 
 ## Quick start
 
@@ -76,19 +72,19 @@ of your thinking. Setup notes are at the top of the workflow file.
 
 ## What ingestion does
 
-Each transcript becomes a markdown note with:
+Each transcript becomes a markdown note. All five steps below are in `ingest.py`:
 
 - **frontmatter** — date, source file, duration, tags;
-- **auto-tags** — frequency-based keywords (0 tokens, no LLM needed); repeated words rank first, and short notes are topped up so nothing lands untagged;
-- **wiki-links** — `[[Other Note]]` when enough of another note's distinctive title words show up in this one (≥3 words and ≥60% of that title), so the graph grows by itself without matching literal strings;
+- **auto-tags** — frequency-based keywords, 0 tokens and no LLM needed: repeated words rank first, and short notes are topped up so nothing lands untagged (`ingest.py`);
+- **wiki-links** — `[[Other Note]]` when enough of another note's distinctive title words show up in this one: `MIN_LINK_COVERAGE = 0.6` and words of ≥3 characters in `ingest.py`, so the graph grows by itself without matching literal strings;
 - **summary** — one-paragraph TL;DR (optional, needs an LLM key);
-- **embeddings** — vector index in a single SQLite file for semantic search (optional; falls back to SQLite FTS5 full-text search, which needs nothing).
+- **embeddings** — vector index in a single SQLite file for semantic search; optional, and `search.py` falls back to SQLite FTS5 full-text search, which needs nothing.
 
-Everything optional is off by default and switched on by environment variables. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Everything optional is off by default and switched on by environment variables — the full list is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Transcription quality notes (hard-won)
 
-The local engine defaults are not arbitrary — they came out of head-to-head bake-offs on real, messy phone-mic voice notes:
+The local engine defaults are not arbitrary — they came out of head-to-head bake-offs on real, messy phone-mic voice notes, and every value below is a literal in `transcribe.py`:
 
 | Setting | Value | Why |
 |---|---|---|
@@ -99,7 +95,7 @@ The local engine defaults are not arbitrary — they came out of head-to-head ba
 | temperature ladder | 0.0→0.6 | retry ladder against stuck repetition |
 | `compression_ratio_threshold` | 1.35 | anti-hallucination |
 
-Put the words Whisper keeps mangling (names, products, jargon) into `brain/glossary.txt` — one short paragraph. It is passed as the initial prompt and dramatically improves proper nouns.
+Put the words Whisper keeps mangling (names, products, jargon) into `brain/glossary.txt` — one short paragraph. `transcribe.py` passes it as the initial prompt, which is what stops the mangling shown in the table above.
 
 ## Layout
 
@@ -114,10 +110,10 @@ brain/
 
 ## Design rules
 
-1. **Plain files are the database.** SQLite is only a derived index; `notes/` is the source of truth.
-2. **Post-then-mark.** A note is only marked done after it is written; failures retry on the next run, nothing is silently lost.
-3. **Ladders, not requirements.** STT: local Whisper → OpenAI API → clear error. Search: vectors → FTS5 → substring scan.
-4. **Weakest-repairer rule.** Every file must be fixable by a non-programmer with a text editor. If a feature breaks that, it doesn't go in.
+1. **Plain files are the database.** SQLite is only a derived index; `notes/` is the source of truth, and `.index/` can be deleted and rebuilt by `ingest.py`.
+2. **Post-then-mark.** A note is only marked done after it is written, so failures retry on the next run of `watch.py` and nothing is silently lost.
+3. **Ladders, not requirements.** STT in `transcribe.py`: local Whisper → OpenAI API → clear error. Search in `search.py`: vectors → FTS5 → substring scan.
+4. **Weakest-repairer rule.** Every file must be fixable by a non-programmer with a text editor — see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). If a feature breaks that, it doesn't go in.
 
 ## Related
 
