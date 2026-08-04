@@ -115,6 +115,29 @@ brain/
 3. **Ladders, not requirements.** STT in `transcribe.py`: local Whisper → OpenAI API → clear error. Search in `search.py`: vectors → FTS5 → substring scan.
 4. **Weakest-repairer rule.** Every file must be fixable by a non-programmer with a text editor — see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). If a feature breaks that, it doesn't go in.
 
+## Roadmap
+
+**Now — [v0.1.0](https://github.com/Palo-Alto-AI-Research-Lab/voice2brain/releases/tag/v0.1.0).**
+The four scripts end to end (`transcribe.py` → `ingest.py` → `notes/*.md` → `search.py`), the
+`watch.py` folder poller, and repo-as-brain mode: push audio to `brain/inbox/` and the GitHub
+Action transcribes it for you.
+
+**Next**, in the order we would take them:
+
+- **A self-test.** There is no test suite here yet. Everything above is verified by running it
+  daily on our own notes, which is evidence of a kind but not the kind you can re-run.
+- **Better linking on short notes.** `MIN_LINK_COVERAGE = 0.6` over distinctive title words means
+  a two-word title has almost nothing to overlap on — measurement showed those notes stay
+  unlinked by construction, and the limit is documented rather than hidden.
+- **More source adapters** — see [docs/ADAPTERS.md](docs/ADAPTERS.md). Anything that can drop a
+  file into a folder already works; the ask is for the sources that cannot.
+- **Not planned:** a server, an editor plugin, or a schema you cannot open in a text editor. If
+  you live inside Obsidian and want to dictate into the open note, install a plugin instead.
+
+Every noticeable change ships as a new release, so the
+[release feed](https://github.com/Palo-Alto-AI-Research-Lab/voice2brain/releases) is the honest
+record of how far this primitive has actually come.
+
 ## Related
 
 - [second-brain-starter-kit](https://github.com/Palo-Alto-AI-Research-Lab/second-brain-starter-kit) — the vault structure this feeds into
