@@ -85,7 +85,7 @@ that cannot be opened in a text editor. MIT.
 
 ## Provenance
 
-Built at [Palo Alto AI Research Lab](https://github.com/Palo-Alto-AI-Research-Lab) by Anton
+Built at [Palo Alto AI Research Lab](https://github.com/tonydzi) by Anton
 Dziatkovskii ([ORCID 0000-0001-7408-3054](https://orcid.org/0000-0001-7408-3054)) and Mike,
 his AI cofounder on Claude Code. This is the dependency-light distillation of a pipeline that
 runs daily on the authors' own notes; the notes themselves are private and stay private.

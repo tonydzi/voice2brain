@@ -149,7 +149,16 @@ MIT. Take it, fork it, wire it into your own stack. If you build an adapter for 
 
 ---
 
-Built at [Palo Alto AI Research Lab](https://github.com/Palo-Alto-AI-Research-Lab). We're looking for engineer-testers — free seed access, DM [@tonydzi](https://t.me/tonydzi) or WhatsApp +13412229178.
+<!-- CONTACT-FOOTER -->
+## About & contact
+
+Built and battle-tested at **Palo Alto AI Research Lab** — a fleet of Claude Code machines
+running 24/7 as a second brain and synthetic cofounder. This pipeline runs daily on the
+authors' own voice notes; it was extracted after it survived production, not written as a demo.
+
+- 📦 This repo: https://github.com/tonydzi/voice2brain
+- 👤 Author: **Anton Dziatkovskii** — Telegram [@tonydzi](https://t.me/tonydzi) · WhatsApp [+1 341 222 9178](https://wa.me/13412229178) · X [@Tony_Stef_](https://x.com/Tony_Stef_)
+- 🧪 **Engineers: want to test-drive this setup?** Message me — I hand out free starter seeds to engineers who test and report back. Adapter requests welcome.
 
 ---
 
