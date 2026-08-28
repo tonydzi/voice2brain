@@ -92,6 +92,6 @@ runs daily on the authors' own notes; the notes themselves are private and stay 
 
 ## Family
 
-The vault structure this feeds into: [second-brain-starter-kit](https://github.com/Palo-Alto-AI-Research-Lab/second-brain-starter-kit).
-Heavier graph memory, same file-first philosophy: [sqlite-graph-memory](https://github.com/Palo-Alto-AI-Research-Lab/sqlite-graph-memory).
-Rules-as-files governance: [claude-bible](https://github.com/Palo-Alto-AI-Research-Lab/claude-bible).
+The vault structure this feeds into: [second-brain-starter-kit](https://github.com/tonydzi/second-brain-starter-kit).
+Heavier graph memory, same file-first philosophy: [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory).
+Rules-as-files governance: [claude-bible](https://github.com/tonydzi/claude-bible).
