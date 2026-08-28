@@ -45,7 +45,7 @@ This repo earns its place only when you want the text to *become* something and 
 ## Quick start
 
 ```bash
-git clone https://github.com/Palo-Alto-AI-Research-Lab/voice2brain
+git clone https://github.com/tonydzi/voice2brain
 cd voice2brain
 pip install faster-whisper        # local STT (or set OPENAI_API_KEY to use the API instead)
 
@@ -117,7 +117,7 @@ brain/
 
 ## Roadmap
 
-**Now — [v0.1.0](https://github.com/Palo-Alto-AI-Research-Lab/voice2brain/releases/tag/v0.1.0).**
+**Now — [v0.1.0](https://github.com/tonydzi/voice2brain/releases/tag/v0.1.0).**
 The four scripts end to end (`transcribe.py` → `ingest.py` → `notes/*.md` → `search.py`), the
 `watch.py` folder poller, and repo-as-brain mode: push audio to `brain/inbox/` and the GitHub
 Action transcribes it for you.
@@ -135,13 +135,13 @@ Action transcribes it for you.
   you live inside Obsidian and want to dictate into the open note, install a plugin instead.
 
 Every noticeable change ships as a new release, so the
-[release feed](https://github.com/Palo-Alto-AI-Research-Lab/voice2brain/releases) is the honest
+[release feed](https://github.com/tonydzi/voice2brain/releases) is the honest
 record of how far this primitive has actually come.
 
 ## Related
 
-- [second-brain-starter-kit](https://github.com/Palo-Alto-AI-Research-Lab/second-brain-starter-kit) — the vault structure this feeds into
-- [sqlite-graph-memory](https://github.com/Palo-Alto-AI-Research-Lab/sqlite-graph-memory) — heavier graph memory, same file-first philosophy
+- [second-brain-starter-kit](https://github.com/tonydzi/second-brain-starter-kit) — the vault structure this feeds into
+- [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory) — heavier graph memory, same file-first philosophy
 
 ## License
 
@@ -182,4 +182,4 @@ Its closest neighbours in the **memory** layer: [`sqlite-graph-memory`](https://
 This project is built by a human + AI team, and the git log says so: Claude writes most of
 the code, Codex and Grok review it, Gemini feeds the research. Each is credited on a commit
 **only if its output changed that commit's content** — no decorative credits. Lab-wide
-policy, one source for every repo: [AI-CONTRIBUTORS.md](https://github.com/Palo-Alto-AI-Research-Lab/.github/blob/main/AI-CONTRIBUTORS.md).
+policy, one source for every repo: [AI-CONTRIBUTORS.md](https://github.com/tonydzi/.github/blob/main/AI-CONTRIBUTORS.md).
