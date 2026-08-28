@@ -7,8 +7,8 @@ authors:
     given-names: Anton
     orcid: "https://orcid.org/0000-0001-7408-3054"
     affiliation: "Palo Alto AI Research Lab"
-repository-code: "https://github.com/Palo-Alto-AI-Research-Lab/voice2brain"
-url: "https://github.com/Palo-Alto-AI-Research-Lab/voice2brain"
+repository-code: "https://github.com/tonydzi/voice2brain"
+url: "https://github.com/tonydzi/voice2brain"
 license: MIT
 keywords:
   - speech to text
