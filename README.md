@@ -173,7 +173,7 @@ demo — and it runs on its own: nothing here phones home to the rest.
 
 **See how the whole thing fits together → [SYSTEM.md](https://github.com/tonydzi/tonydzi/blob/main/SYSTEM.md)**
 
-Its closest neighbours in the **memory** layer: [`sqlite-graph-memory`](https://github.com/tonydzi/sqlite-graph-memory) · [`second-brain-starter-kit`](https://github.com/tonydzi/second-brain-starter-kit) · [`compact-canon`](https://github.com/tonydzi/compact-canon)
+Its closest neighbours in the **memory** layer: [`compact-canon`](https://github.com/tonydzi/compact-canon) · [`claw-retro`](https://github.com/tonydzi/claw-retro) · [`always-loaded-diet`](https://github.com/tonydzi/always-loaded-diet)
 
 <!--ecosystem-map:end-->
 
